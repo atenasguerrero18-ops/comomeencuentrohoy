@@ -17,7 +17,7 @@ const db = getFirestore(app);
 const seccionIngreso = document.getElementById('seccion-ingreso');
 const seccionFormulario = document.getElementById('seccion-formulario');
 const seccionResultado = document.getElementById('seccion-resultado');
-const btnIngresar = document.getElementById('btn-ingresar');
+const btnIngresar = document.getEleNentById('btn-ingresar');
 const formRegistro = document.getElementById('form-registro');
 
 let empresaActiva = "";
