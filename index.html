@@ -1,77 +1,93 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>¿Cómo me encuentro hoy? - Control Fisiológico</title>
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Cómo me encuentro hoy? - Control Fisiológico</title>
+    <style>
+        /* Estilos básicos integrados para evitar fallas de carga */
+        body { font-family: Arial, sans-serif; background: #f0f2f5; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        .btn { width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .btn:hover { background: #0056b3; }
+        .id-oculto { display: none; }
+        .circulo-semaforo { width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 24px; margin: 20px auto; background: #ccc; }
+        .semaforo-verde { background: #28a745; }
+        .semaforo-amarillo { background: #ffc107; color: #333; }
+        .semaforo-rojo { background: #dc3545; }
+    </style>
 </head>
 <body>
 
-<header>
-<h1>¿Cómo me encuentro hoy?</h1>
-<p>Control de carga y disponibilidad fisiológica para deportistas</p>
+<header style="text-align: center; margin-bottom: 20px;">
+    <h1>¿Cómo me encuentro hoy?</h1>
+    <p>Control de carga y disponibilidad fisiológica para deportistas</p>
 </header>
 
 <main class="container">
-<!-- SECCIÓN 1: INGRESO -->
-<section class="card" id="seccion-ingreso">
-<h2>Ingreso al Sistema</h2>
-<div class="form-group">
-<label for="codigo-empresa">Código de Empresa / Club:</label>
-<input type="text" id="codigo-empresa" placeholder="Ej: CLUB-COLOCOLO">
-</div>
-<div class="form-group">
-<label for="nombre-atleta">Tu Nombre Completo:</label>
-<input type="text" id="nombre-atleta" placeholder="Ej: Juan Pérez">
-<button id="btn-ingresar" class="btn">Ingresar al Perfil</button>
-</div>
-</section>
+    <!-- SECCIÓN 1: INGRESO -->
+    <section class="card" id="seccion-ingreso">
+        <h2>Ingreso al Sistema</h2>
+        <div class="form-group">
+            <label for="codigo-empresa">Código de Empresa / Club:</label>
+            <input type="text" id="codigo-empresa" placeholder="Ej: CLUB-COLOCOLO">
+        </div>
+        <div class="form-group">
+            <label for="nombre-atleta">Tu Nombre Completo:</label>
+            <input type="text" id="nombre-atleta" placeholder="Ej: Juan Pérez">
+            <button id="btn-ingresar" class="btn">Ingresar al Perfil</button>
+        </div>
+    </section>
 
-<!-- SECCIÓN 2: FORMULARIO DIARIO (Oculto al inicio) -->
-<section class="card id-oculto" id="seccion-formulario">
-<h2>Chequeo al Despertar</h2>
-<p>Bienvenido/a: <strong id="nombre-bienvenida"></strong></p>
+    <!-- SECCIÓN 2: FORMULARIO DIARIO -->
+    <section class="card id-oculto" id="seccion-formulario">
+        <h2>Chequeo al Despertar</h2>
+        <p>Bienvenido/a: <strong id="nombre-bienvenida"></strong></p>
 
-<form id="form-registro">
-<h3>Datos Subjetivos</h3>
-<div class="form-group">
-<label for="dato-animo">¿Cómo estás de ánimo hoy? (1 al 5):</label>
-<input type="number" id="dato-animo" min="1" max="5" placeholder="5 = Excelente">
-</div>
+        <form id="form-registro">
+            <h3>Datos Subjetivos</h3>
+            <div class="form-group">
+                <label for="dato-animo">¿Cómo estás de ánimo hoy? (1 al 5):</label>
+                <input type="number" id="dato-animo" min="1" max="5" placeholder="5 = Excelente">
+            </div>
 
-<h3>Datos de la Banda Deportiva</h3>
-<div class="form-group">
-<label for="dato-hrv">HRV de la banda (ms):</label>
-<input type="number" id="dato-hrv" placeholder="Ej: 65">
-</div>
-<div class="form-group">
-<label for="dato-sueno">Horas de Sueño:</label>
-<input type="number" id="dato-sueno" step="0.1" placeholder="Ej: 7.5">
-</div>
+            <h3>Datos de la Banda Deportiva</h3>
+            <div class="form-group">
+                <label for="dato-hrv">HRV de la banda (ms):</label>
+                <input type="number" id="dato-hrv" placeholder="Ej: 65">
+            </div>
+            <div class="form-group">
+                <label for="dato-sueno">Horas de Sueño:</label>
+                <input type="number" id="dato-sueno" step="0.1" placeholder="Ej: 7.5">
+            </div>
 
-<h3>Carga del Entrenamiento del Día</h3>
-<div class="form-group">
-<label for="carga-entreno">Estrés metabólico / Carga de la tarea:</label>
-<input type="number" id="carga-entreno" placeholder="Ej: 450">
-</div>
+            <h3>Carga del Entrenamiento del Día</h3>
+            <div class="form-group">
+                <label for="carga-entreno">Estrés metabólico / Carga de la tarea:</label>
+                <input type="number" id="carga-entreno" placeholder="Ej: 450">
+            </div>
 
-<button type="submit" class="btn btn-guardar">Guardar Registro y Calcular</button>
-</form>
-</section>
+            <button type="submit" class="btn" style="background: #28a745;">Guardar Registro y Calcular</button>
+        </form>
+    </section>
 
-<!-- SECCIÓN 3: RESULTADOS Y SEMÁFORO (Oculto al inicio) -->
-<section class="card id-oculto" id="seccion-resultado">
-<h2>Tu Semáforo de Hoy</h2>
-<div id="semaforo-fisiologico" class="circulo-semaforo">--</div>
-<div class="datos-calculados">
-<p>Tu ratio <strong>ACWR</strong> actual es: <span id="valor-acwr">0.0</span></p>
-<p id="mensaje-disponibilidad">Cargando diagnóstico...</p>
-</div>
-</section>
+    <!-- SECCIÓN 3: RESULTADOS Y SEMÁFORO -->
+    <section class="card id-oculto" id="seccion-resultado">
+        <h2>Tu Semáforo de Hoy</h2>
+        <div id="semaforo-fisiologico" class="circulo-semaforo">--</div>
+        <div style="text-align: center;">
+            <p>Tu ratio <strong>ACWR</strong> actual es: <span id="valor-acwr">0.0</span></p>
+            <p id="mensaje-disponibilidad">Cargando diagnóstico...</p>
+        </div>
+    </section>
 </main>
 
-<!-- Conexión corregida al cerebro de tu app -->
-<script type="module" src="./app.js?v=999"></script>
+<!-- Forzamos al navegador a leer la versión más nueva con ?v=reset -->
+<script type="module" src="./app.js?v=reset"></script>
 </body>
 </html>
+
