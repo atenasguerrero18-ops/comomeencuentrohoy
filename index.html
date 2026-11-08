@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>¿Cómo me encuentro hoy? - Control Fisiológico</title>
     <style>
+        /* Estilos básicos integrados para evitar fallas de carga */
         body { font-family: Arial, sans-serif; background: #f0f2f5; color: #333; margin: 0; padding: 20px; }
         .container { max-width: 500px; margin: 0 auto; }
         .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
@@ -28,6 +29,7 @@
 </header>
 
 <main class="container">
+    <!-- SECCIÓN 1: INGRESO -->
     <section class="card" id="seccion-ingreso">
         <h2>Ingreso al Sistema</h2>
         <div class="form-group">
@@ -41,15 +43,18 @@
         </div>
     </section>
 
+    <!-- SECCIÓN 2: FORMULARIO DIARIO -->
     <section class="card id-oculto" id="seccion-formulario">
         <h2>Chequeo al Despertar</h2>
         <p>Bienvenido/a: <strong id="nombre-bienvenida"></strong></p>
+
         <form id="form-registro">
             <h3>Datos Subjetivos</h3>
             <div class="form-group">
                 <label for="dato-animo">¿Cómo estás de ánimo hoy? (1 al 5):</label>
                 <input type="number" id="dato-animo" min="1" max="5" placeholder="5 = Excelente">
             </div>
+
             <h3>Datos de la Banda Deportiva</h3>
             <div class="form-group">
                 <label for="dato-hrv">HRV de la banda (ms):</label>
@@ -59,15 +64,18 @@
                 <label for="dato-sueno">Horas de Sueño:</label>
                 <input type="number" id="dato-sueno" step="0.1" placeholder="Ej: 7.5">
             </div>
+
             <h3>Carga del Entrenamiento del Día</h3>
             <div class="form-group">
                 <label for="carga-entreno">Estrés metabólico / Carga de la tarea:</label>
                 <input type="number" id="carga-entreno" placeholder="Ej: 450">
             </div>
+
             <button type="submit" class="btn" style="background: #28a745;">Guardar Registro y Calcular</button>
         </form>
     </section>
 
+    <!-- SECCIÓN 3: RESULTADOS Y SEMÁFORO -->
     <section class="card id-oculto" id="seccion-resultado">
         <h2>Tu Semáforo de Hoy</h2>
         <div id="semaforo-fisiologico" class="circulo-semaforo">--</div>
@@ -78,7 +86,7 @@
     </section>
 </main>
 
-<!-- Forzamos una versión limpia llamada v=prod para saltar el caché de GitHub -->
-<script type="module" src="app.js?v=prod"></script>
+<!-- Forzamos al navegador a leer la versión más nueva con ?v=reset -->
+<script type="module" src="main.js"></script>
 </body>
 </html>
