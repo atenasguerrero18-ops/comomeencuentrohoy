@@ -70,6 +70,7 @@ formRegistro.addEventListener('submit', async (e) => {
     return;
   }
 
+  // CORREGIDO: Se añade el [0] para obtener la cadena de texto de la fecha correctamente
   const fechaHoy = new Date().toISOString().split('T')[0];
 
   try {
