@@ -1,8 +1,8 @@
-// 1. Importaciones oficiales con URLs completas (Versión estable v10)
+// 1. Importaciones con URLs completas y oficiales de Firebase
 import { initializeApp } from "https://gstatic.com";
 import { getFirestore, doc, setDoc, getDoc, collection, query, getDocs, orderBy, limit } from "https://gstatic.com";
 
-// 2. Credenciales de tu proyecto (Corregido el dominio de autenticación)
+// 2. Credenciales oficiales de tu proyecto
 const firebaseConfig = {
   apiKey: "AIzaSyDR2P_E74_p134MphiUUktXGzVvKy4hn1Y",
   authDomain: "://firebaseapp.com", 
@@ -12,11 +12,11 @@ const firebaseConfig = {
   appId: "1:541073995310:web:5f0de7d89242b8606451bf"
 };
 
-// 3. Inicialización de servicios
+// 3. Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 4. Captura de elementos del HTML (Corregido 'getElementById')
+// 4. Capturar elementos de la pantalla
 const seccionIngreso = document.getElementById('seccion-ingreso');
 const seccionFormulario = document.getElementById('seccion-formulario');
 const seccionResultado = document.getElementById('seccion-resultado');
@@ -26,7 +26,7 @@ const formRegistro = document.getElementById('form-registro');
 let empresaActiva = "";
 let atletaActivo = "";
 
-// 5. Lógica del Botón Ingresar
+// 5. Acción al presionar el botón "Ingresar al Perfil"
 btnIngresar.addEventListener('click', async () => {
   const codigoEmpresa = document.getElementById('codigo-empresa').value.trim().toUpperCase();
   const nombreAtleta = document.getElementById('nombre-atleta').value.trim();
@@ -57,12 +57,12 @@ btnIngresar.addEventListener('click', async () => {
     seccionIngreso.classList.add('id-oculto');
     seccionFormulario.classList.remove('id-oculto');
   } catch (error) {
-    console.error("Error al conectar con Firestore:", error);
-    alert("Error de conexión con la base de datos. Revisa la consola.");
+    console.error("Error en Firestore:", error);
+    alert("Error al conectar con la base de datos de Firebase.");
   }
 });
 
-// 6. Lógica del Formulario de Registro Diario
+// 6. Acción al guardar el formulario diario
 formRegistro.addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -91,6 +91,7 @@ formRegistro.addEventListener('submit', async (e) => {
 
     alert("Registro guardado con éxito.");
 
+    // Cálculos del Semáforo ACWR
     const registrosCol = collection(db, "empresas", empresaActiva, "usuarios", atletaActivo, "registros_diarios");
     const q = query(registrosCol, orderBy("fecha", "desc"), limit(28));
     const querySnapshot = await getDocs(q);
@@ -132,7 +133,7 @@ formRegistro.addEventListener('submit', async (e) => {
 
     seccionResultado.classList.remove('id-oculto');
   } catch (error) {
-    console.error("Error al guardar registro:", error);
+    console.error("Error al guardar:", error);
     alert("Hubo un error al guardar tus datos.");
   }
 });
