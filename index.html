@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Como me encuentro hoy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Como me encuentro hoy</h1>
+        <p>- INTERPRETA TUS DATOS Y OBTÉN UN PLUS EN TU RENDIMIENTO DEPORTIVO -</p>
+    </header>
+
+    <div class="container">
+        
+        <!-- SECCIÓN FORMULARIO (Se oculta al calcular si gustas) -->
+        <div id="seccionFormulario" class="card">
+            <h2>Ingresa tus datos</h2>
+            <form id="formularioMetricas">
+                <label>Fecha del registro:</label>
+                <input type="date" id="inputFecha" required>
+
+                <label>HRV de la banda (ms):</label>
+                <input type="number" id="inputHrv" placeholder="Ej: 62">
+
+                <label>Pulso en reposo (LPM):</label>
+                <input type="number" id="inputPulso" placeholder="Ej: 54">
+
+                <label>Horas de sueño:</label>
+                <input type="number" step="0.1" id="inputSueno" placeholder="Ej: 6.5">
+
+                <button type="submit" id="btnCalcular">Ver mi semáforo</button>
+            </form>
+        </div>
+
+        <!-- SECCIÓN RESULTADOS (Donde aparecen los semáforos, círculos y colores) -->
+        <div id="seccionResultado" class="card id-oculto">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <span id="txtAlertaSemaforo" style="padding: 6px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9rem;">Semáforo</span>
+                    <h2 id="elSemaforoTitulo">Entrena con precaución</h2>
+                </div>
+                <!-- Círculo de Disponibilidad -->
+                <div style="text-align: center; border: 4px solid #c87d25; border-radius: 50%; width: 70px; height: 70px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <span id="txtDisponibilidadNum" style="font-weight: 700; font-size: 1.2rem;">62</span>
+                    <span style="font-size: 0.6rem; color: #667568;">DE 100</span>
+                </div>
+            </div>
+
+            <p id="txtMensaje" style="margin-top: 15px; color: #4a554a;">Tu estado de hoy es intermedio...</p>
+
+            <div class="card" style="margin-top: 20px; background: #ffffff;">
+                <h3>Recuperación</h3>
+                <p>Qué tan recuperado está tu cuerpo según tus datos de hoy.</p>
+                <div style="background: #e3e0d8; border-radius: 10px; height: 10px; width: 100%; margin-top: 10px;">
+                    <div id="barraRecuperacion" style="background: #c87d25; width: 69%; height: 100%; border-radius: 10px;"></div>
+                </div>
+                <p id="txtRecuperacionDesc" style="font-size: 0.9rem; margin-top: 8px; color: #667568;">Buena recuperación...</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Botón flotante de Soporte WhatsApp -->
+    <a href="https://wa.me/56942911303" target="_blank" class="whatsapp-float">
+        💬 SOPORTE <span style="font-size:0.75rem; display:block;">+56 9 4291 1303</span>
+    </a>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>
