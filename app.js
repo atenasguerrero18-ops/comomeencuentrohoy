@@ -1,7 +1,7 @@
 import { initializeApp } from "https://gstatic.com";
 import { getFirestore, doc, setDoc, getDoc, collection, query, getDocs, orderBy, limit } from "https://gstatic.com";
 
-// Credenciales sacadas de tu foto de pantalla
+// Credenciales sacadas de tu proyecto de Firebase
 const firebaseConfig = {
 apiKey: "AIzaSyDR2P_E74_p134MphiUUktXGzVvKy4hn1Y",
 authDomain: "://firebaseapp.com",
@@ -44,6 +44,8 @@ nombre: atletaActivo,
 fechaCreacion: new Date().toISOString()
 });
 alert(`¡Perfil creado con éxito! Bienvenido/a, ${atletaActivo}.`);
+} else {
+alert(`¡Bienvenido/a de nuevo, ${atletaActivo}!`);
 }
 
 document.getElementById('nombre-bienvenida').innerText = atletaActivo;
@@ -75,6 +77,8 @@ sueno: sueno,
 cargaEntrenamiento: cargaHoy,
 fechaRegistro: new Date().toISOString()
 });
+
+alert("Registro guardado con éxito.");
 
 const registrosCol = collection(db, "empresas", empresaActiva, "usuarios", atletaActivo, "registros_diarios");
 const q = query(registrosCol, orderBy("fecha", "desc"), limit(28));
