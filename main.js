@@ -1,7 +1,7 @@
 
 // 1. Importaciones oficiales de Firebase mediante CDN compatible con navegador
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, collection, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // 2. Credenciales oficiales de tu proyecto
 const firebaseConfig = {
