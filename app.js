@@ -1,8 +1,8 @@
-// CORREGIDO: Se agregaron las URLs completas del CDN oficial de Firebase (v10)
+// 1. Importaciones oficiales con URLs completas (Versión estable v10)
 import { initializeApp } from "https://gstatic.com";
 import { getFirestore, doc, setDoc, getDoc, collection, query, getDocs, orderBy, limit } from "https://gstatic.com";
 
-// Credenciales de tu proyecto de Firebase (CORREGIDO el authDomain)
+// 2. Credenciales de tu proyecto (Corregido el dominio de autenticación)
 const firebaseConfig = {
   apiKey: "AIzaSyDR2P_E74_p134MphiUUktXGzVvKy4hn1Y",
   authDomain: "://firebaseapp.com", 
@@ -12,19 +12,21 @@ const firebaseConfig = {
   appId: "1:541073995310:web:5f0de7d89242b8606451bf"
 };
 
+// 3. Inicialización de servicios
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// 4. Captura de elementos del HTML (Corregido 'getElementById')
 const seccionIngreso = document.getElementById('seccion-ingreso');
 const seccionFormulario = document.getElementById('seccion-formulario');
 const seccionResultado = document.getElementById('seccion-resultado');
-// CORREGIDO: Se cambió getEleNentById por getElementById
 const btnIngresar = document.getElementById('btn-ingresar'); 
 const formRegistro = document.getElementById('form-registro');
 
 let empresaActiva = "";
 let atletaActivo = "";
 
+// 5. Lógica del Botón Ingresar
 btnIngresar.addEventListener('click', async () => {
   const codigoEmpresa = document.getElementById('codigo-empresa').value.trim().toUpperCase();
   const nombreAtleta = document.getElementById('nombre-atleta').value.trim();
@@ -37,24 +39,30 @@ btnIngresar.addEventListener('click', async () => {
   empresaActiva = codigoEmpresa;
   atletaActivo = nombreAtleta;
 
-  const usuarioRef = doc(db, "empresas", empresaActiva, "usuarios", atletaActivo);
-  const usuarioSnap = await getDoc(usuarioRef);
+  try {
+    const usuarioRef = doc(db, "empresas", empresaActiva, "usuarios", atletaActivo);
+    const usuarioSnap = await getDoc(usuarioRef);
 
-  if (!usuarioSnap.exists()) {
-    await setDoc(usuarioRef, {
-      nombre: atletaActivo,
-      fechaCreacion: new Date().toISOString()
-    });
-    alert(`¡Perfil creado con éxito! Bienvenido/a, ${atletaActivo}.`);
-  } else {
-    alert(`¡Bienvenido/a de nuevo, ${atletaActivo}!`);
+    if (!usuarioSnap.exists()) {
+      await setDoc(usuarioRef, {
+        nombre: atletaActivo,
+        fechaCreacion: new Date().toISOString()
+      });
+      alert(`¡Perfil creado con éxito! Bienvenido/a, ${atletaActivo}.`);
+    } else {
+      alert(`¡Bienvenido/a de nuevo, ${atletaActivo}!`);
+    }
+
+    document.getElementById('nombre-bienvenida').innerText = atletaActivo;
+    seccionIngreso.classList.add('id-oculto');
+    seccionFormulario.classList.remove('id-oculto');
+  } catch (error) {
+    console.error("Error al conectar con Firestore:", error);
+    alert("Error de conexión con la base de datos. Revisa la consola.");
   }
-
-  document.getElementById('nombre-bienvenida').innerText = atletaActivo;
-  seccionIngreso.classList.add('id-oculto');
-  seccionFormulario.classList.remove('id-oculto');
 });
 
+// 6. Lógica del Formulario de Registro Diario
 formRegistro.addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -68,60 +76,64 @@ formRegistro.addEventListener('submit', async (e) => {
     return;
   }
 
-  // CORREGIDO: Se añadió la posición [0] para separar correctamente el año-mes-día
   const fechaHoy = new Date().toISOString().split('T')[0];
 
-  const registroRef = doc(db, "empresas", empresaActiva, "usuarios", atletaActivo, "registros_diarios", fechaHoy);
-  await setDoc(registroRef, {
-    fecha: fechaHoy,
-    animo: animo,
-    hrv: hrv,
-    sueno: sueno,
-    cargaEntrenamiento: cargaHoy,
-    fechaRegistro: new Date().toISOString()
-  });
+  try {
+    const registroRef = doc(db, "empresas", empresaActiva, "usuarios", atletaActivo, "registros_diarios", fechaHoy);
+    await setDoc(registroRef, {
+      fecha: fechaHoy,
+      animo: animo,
+      hrv: hrv,
+      sueno: sueno,
+      cargaEntrenamiento: cargaHoy,
+      fechaRegistro: new Date().toISOString()
+    });
 
-  alert("Registro guardado con éxito.");
+    alert("Registro guardado con éxito.");
 
-  const registrosCol = collection(db, "empresas", empresaActiva, "usuarios", atletaActivo, "registros_diarios");
-  const q = query(registrosCol, orderBy("fecha", "desc"), limit(28));
-  const querySnapshot = await getDocs(q);
+    const registrosCol = collection(db, "empresas", empresaActiva, "usuarios", atletaActivo, "registros_diarios");
+    const q = query(registrosCol, orderBy("fecha", "desc"), limit(28));
+    const querySnapshot = await getDocs(q);
 
-  let cargasSemanales = [];
-  querySnapshot.forEach((doc) => {
-    cargasSemanales.push(doc.data().cargaEntrenamiento || 0);
-  });
+    let cargasSemanales = [];
+    querySnapshot.forEach((doc) => {
+      cargasSemanales.push(doc.data().cargaEntrenamiento || 0);
+    });
 
-  const ultimos7Dias = cargasSemanales.slice(0, 7);
-  const sumaAguda = ultimos7Dias.reduce((a, b) => a + b, 0);
-  const promedioAguda = sumaAguda / (ultimos7Dias.length || 1);
+    const ultimos7Dias = cargasSemanales.slice(0, 7);
+    const sumaAguda = ultimos7Dias.reduce((a, b) => a + b, 0);
+    const promedioAguda = sumaAguda / (ultimos7Dias.length || 1);
 
-  const sumaCronica = cargasSemanales.reduce((a, b) => a + b, 0);
-  const promedioCronica = sumaCronica / (cargasSemanales.length || 1);
+    const sumaCronica = cargasSemanales.reduce((a, b) => a + b, 0);
+    const promedioCronica = sumaCronica / (cargasSemanales.length || 1);
 
-  const acwr = promedioCronica > 0 ? (promedioAguda / promedioCronica) : 1.0;
+    const acwr = promedioCronica > 0 ? (promedioAguda / promedioCronica) : 1.0;
 
-  const elSemaforo = document.getElementById('semaforo-fisiologico');
-  const txtAcwr = document.getElementById('valor-acwr');
-  const txtMensaje = document.getElementById('mensaje-disponibilidad');
+    const elSemaforo = document.getElementById('semaforo-fisiologico');
+    const txtAcwr = document.getElementById('valor-acwr');
+    const txtMensaje = document.getElementById('mensaje-disponibilidad');
 
-  elSemaforo.className = "circulo-semaforo";
-  txtAcwr.innerText = acwr.toFixed(2);
+    elSemaforo.className = "circulo-semaforo";
+    txtAcwr.innerText = acwr.toFixed(2);
 
-  if (acwr >= 0.8 && acwr <= 1.3) {
-    elSemaforo.classList.add('semaforo-verde');
-    elSemaforo.innerText = "GO";
-    txtMensaje.innerText = "¡Excelente balance! Estás en la zona óptima de rendimiento. Riesgo bajo de lesión.";
-  } else if ((acwr >= 0.5 && acwr < 0.8) || (acwr > 1.3 && acwr <= 1.5)) {
-    elSemaforo.classList.add('semaforo-amarillo');
-    elSemaforo.innerText = "WARN";
-    txtMensaje.innerText = "Atención: Tu carga se está desviando. Monitorea tu recuperación.";
-  } else {
-    elSemaforo.classList.add('semaforo-rojo');
-    elSemaforo.innerText = "STOP";
-    txtMensaje.innerText = "¡Peligro de sobreentrenamiento! Se recomienda disminuir cargas hoy.";
+    if (acwr >= 0.8 && acwr <= 1.3) {
+      elSemaforo.classList.add('semaforo-verde');
+      elSemaforo.innerText = "GO";
+      txtMensaje.innerText = "¡Excelente balance! Estás en la zona óptima de rendimiento. Riesgo bajo de lesión.";
+    } else if ((acwr >= 0.5 && acwr < 0.8) || (acwr > 1.3 && acwr <= 1.5)) {
+      elSemaforo.classList.add('semaforo-amarillo');
+      elSemaforo.innerText = "WARN";
+      txtMensaje.innerText = "Atención: Tu carga se está desviando. Monitorea tu recuperación.";
+    } else {
+      elSemaforo.classList.add('semaforo-rojo');
+      elSemaforo.innerText = "STOP";
+      txtMensaje.innerText = "¡Peligro de sobreentrenamiento! Se recomienda disminuir cargas hoy.";
+    }
+
+    seccionResultado.classList.remove('id-oculto');
+  } catch (error) {
+    console.error("Error al guardar registro:", error);
+    alert("Hubo un error al guardar tus datos.");
   }
-
-  seccionResultado.classList.remove('id-oculto');
 });
 
