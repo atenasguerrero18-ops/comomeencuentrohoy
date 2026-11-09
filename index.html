@@ -1,73 +1,108 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Como me encuentro hoy</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Como me encuentro hoy</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="extra.css">
 </head>
 <body>
+<header>
+  <h1>Como me encuentro hoy</h1>
+  <p>- INTERPRETA TUS DATOS Y OBTÉN UN PLUS EN TU RENDIMIENTO DEPORTIVO -</p>
+</header>
+<div class="container">
 
-    <header>
-        <h1>Como me encuentro hoy</h1>
-        <p>- INTERPRETA TUS DATOS Y OBTÉN UN PLUS EN TU RENDIMIENTO DEPORTIVO -</p>
-    </header>
+<div id="seccion-ingreso" class="card">
+  <h2>Acceso privado</h2>
+  <p class="muted">Este panel es de uso interno. Ingresa el código que te entregó tu equipo, tu nombre y tu deporte.</p>
+  <label for="codigo">Código de empresa</label><input id="codigo" autocomplete="off" autocapitalize="characters">
+  <label for="nombre">Tu nombre</label><input id="nombre" autocomplete="given-name">
+  <p class="muted">Usa siempre el mismo nombre: si ya existe, se abre tu historial.</p>
+  <label for="deporte">Tu deporte</label>
+  <select id="deporte"><option value="">Elige tu deporte</option><option>Fútbol</option><option>Básquetbol</option><option>Vóleibol</option><option>Atletismo</option><option>Natación</option><option>Ciclismo</option><option>Tenis</option><option>Rugby</option><option>Gimnasio / Fitness</option><option>Otro</option></select>
+  <button id="btn-ingresar" type="button">Ingresar al perfil</button>
+</div>
 
-    <div class="container">
-        
-        <!-- SECCIÓN FORMULARIO (Se oculta al calcular si gustas) -->
-        <div id="seccionFormulario" class="card">
-            <h2>Ingresa tus datos</h2>
-            <form id="formularioMetricas">
-                <label>Fecha del registro:</label>
-                <input type="date" id="inputFecha" required>
+<div id="app" hidden>
+  <p><b id="hello"></b> <button class="ghost" id="out" type="button">Cambiar de perfil</button></p>
+  <div class="tabs" id="tabs"><button data-v="check">Chequeo</button><button data-v="train">Entreno</button><button data-v="hist">Historial</button></div>
 
-                <label>HRV de la banda (ms):</label>
-                <input type="number" id="inputHrv" placeholder="Ej: 62">
-
-                <label>Pulso en reposo (LPM):</label>
-                <input type="number" id="inputPulso" placeholder="Ej: 54">
-
-                <label>Horas de sueño:</label>
-                <input type="number" step="0.1" id="inputSueno" placeholder="Ej: 6.5">
-
-                <button type="submit" id="btnCalcular">Ver mi semáforo</button>
-            </form>
+  <section id="v-check">
+    <form id="fcheck" class="card" novalidate>
+      <h2>Registra cómo amaneciste</h2>
+      <p class="muted">Idealmente al despertar, antes de entrenar.</p>
+      <label for="cdate">Fecha</label><input id="cdate" type="date">
+      <div class="row">
+        <div><label for="hrv">HRV (ms)</label><input id="hrv" inputmode="decimal"></div>
+        <div><label for="rhr">Pulso en reposo (lpm)</label><input id="rhr" inputmode="decimal"></div>
+      </div>
+      <label for="sleep">Horas de sueño</label><input id="sleep" inputmode="decimal">
+      <details><summary>Datos de tu banda (opcional)</summary>
+        <div class="row">
+          <div><label for="frag">Despertares</label><input id="frag" inputmode="numeric"></div>
+          <div><label for="spo2">Oxígeno (%)</label><input id="spo2" inputmode="decimal"></div>
+          <div><label for="temp">Temperatura (°C)</label><input id="temp" inputmode="decimal"></div>
+          <div><label for="glu">Glucosa (mg/dL)</label><input id="glu" inputmode="decimal"></div>
+          <div><label for="sys">Tensión sistólica</label><input id="sys" inputmode="numeric"></div>
+          <div><label for="dia">Tensión diastólica</label><input id="dia" inputmode="numeric"></div>
         </div>
-
-        <!-- SECCIÓN RESULTADOS (Donde aparecen los semáforos, círculos y colores) -->
-        <div id="seccionResultado" class="card id-oculto">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <span id="txtAlertaSemaforo" style="padding: 6px 12px; border-radius: 8px; font-weight: 600; font-size: 0.9rem;">Semáforo</span>
-                    <h2 id="elSemaforoTitulo">Entrena con precaución</h2>
-                </div>
-                <!-- Círculo de Disponibilidad -->
-                <div style="text-align: center; border: 4px solid #c87d25; border-radius: 50%; width: 70px; height: 70px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                    <span id="txtDisponibilidadNum" style="font-weight: 700; font-size: 1.2rem;">62</span>
-                    <span style="font-size: 0.6rem; color: #667568;">DE 100</span>
-                </div>
-            </div>
-
-            <p id="txtMensaje" style="margin-top: 15px; color: #4a554a;">Tu estado de hoy es intermedio...</p>
-
-            <div class="card" style="margin-top: 20px; background: #ffffff;">
-                <h3>Recuperación</h3>
-                <p>Qué tan recuperado está tu cuerpo según tus datos de hoy.</p>
-                <div style="background: #e3e0d8; border-radius: 10px; height: 10px; width: 100%; margin-top: 10px;">
-                    <div id="barraRecuperacion" style="background: #c87d25; width: 69%; height: 100%; border-radius: 10px;"></div>
-                </div>
-                <p id="txtRecuperacionDesc" style="font-size: 0.9rem; margin-top: 8px; color: #667568;">Buena recuperación...</p>
-            </div>
+        <label for="stress">Estrés de la banda (1-10)</label><input id="stress" inputmode="numeric">
+      </details>
+      <label>¿Cómo dormiste?</label><div class="scale" id="sleepQ"></div><div class="ends"><span>Muy mal</span><span>Muy bien</span></div>
+      <label>¿Cómo está tu cuerpo?</label><div class="scale" id="body"></div><div class="ends"><span>Muy cargado</span><span>Excelente</span></div>
+      <label>¿Cómo está tu ánimo?</label><div class="scale" id="mood"></div><div class="ends"><span>Muy bajo</span><span>Muy bien</span></div>
+      <label>¿Dolor muscular?</label><div class="scale" id="pain"></div><div class="ends"><span>Nada</span><span>Mucho</span></div>
+      <label>¿Fatiga?</label><div class="scale" id="fatigue"></div><div class="ends"><span>Nada</span><span>Mucho</span></div>
+      <details><summary>Ciclo menstrual (opcional)</summary>
+        <div class="row">
+          <div><label for="phase">Fase</label><select id="phase"><option value="">No aplica</option><option>Menstrual</option><option>Folicular</option><option>Ovulación</option><option>Lútea</option></select></div>
+          <div><label for="pday">Día del ciclo</label><input id="pday" inputmode="numeric"></div>
         </div>
+      </details>
+      <button type="submit">Ver mi semáforo</button>
+    </form>
+    <section id="res" class="card" hidden>
+      <div class="head"><div class="lights" id="lights"><span></span><span></span><span></span></div>
+        <div><div><span id="rnum"></span> <span class="muted">de 100</span></div><h2 id="rtitle" style="margin:4px 0 0"></h2></div></div>
+      <p id="rtext"></p><div id="blocks"></div><ul id="notes"></ul>
+    </section>
+  </section>
 
-    </div>
+  <section id="v-train" hidden>
+    <form id="ftrain" class="card" novalidate>
+      <h2>Registra tu entrenamiento</h2>
+      <p class="muted">Al terminar tu sesión, anota la carga y los datos de tu banda.</p>
+      <label for="tdate">Fecha</label><input id="tdate" type="date">
+      <label for="ttype">Tipo</label>
+      <select id="ttype"><option>Fuerza</option><option>Resistencia</option><option>Velocidad</option><option>Técnico</option><option>Partido</option><option>Recuperación</option><option>Otro</option></select>
+      <div class="row">
+        <div><label for="tmin">Duración (min)</label><input id="tmin" inputmode="numeric"></div>
+        <div><label for="tmet">Esfuerzo MET (1-10)</label><input id="tmet" inputmode="decimal"></div>
+        <div><label for="thr">Pulso promedio</label><input id="thr" inputmode="numeric"></div>
+        <div><label for="thrmax">Pulso máximo</label><input id="thrmax" inputmode="numeric"></div>
+      </div>
+      <label>¿Cómo te sentiste al terminar?</label><div class="scale" id="feel"></div><div class="ends"><span>Agotado</span><span>Excelente</span></div>
+      <label><input type="checkbox" id="tpain">Terminé con molestias o dolor</label>
+      <label for="tnotes" style="margin-top:14px">Notas (opcional)</label><textarea id="tnotes" rows="2"></textarea>
+      <button type="submit">Guardar entrenamiento</button>
+    </form>
+  </section>
 
-    <!-- Botón flotante de Soporte WhatsApp -->
-    <a href="https://wa.me/56942911303" target="_blank" class="whatsapp-float">
-        💬 SOPORTE <span style="font-size:0.75rem; display:block;">+56 9 4291 1303</span>
-    </a>
-
-    <script type="module" src="main.js"></script>
+  <section id="v-hist" hidden>
+    <div class="card"><h2>Tu evolución día a día</h2>
+      <div class="stats"><div><b id="sdays">0</b><span>Días registrados</span></div><div><b id="savg">—</b><span>Disponibilidad promedio</span></div><div><b id="slast">—</b><span>Último chequeo</span></div></div></div>
+    <div class="card"><h2>Tus últimos días</h2><p class="muted">Cada barra es un día: más alta significa mejor disponibilidad.</p><div id="chart"></div></div>
+    <div class="card"><h2>HRV frente a tu promedio</h2><div id="hrvc"></div></div>
+    <div class="card"><h2>Carga de entrenamiento</h2>
+      <div class="stats"><div><b id="l7">0</b><span>Carga 7 días</span></div><div><b id="l28">0</b><span>Carga 28 días</span></div><div><b id="acwr">—</b><span>ACWR</span></div></div>
+      <ul class="list" id="sess"></ul></div>
+  </section>
+</div>
+</div>
+<a href="https://wa.me/56942911303" target="_blank" rel="noopener" class="whatsapp-float">💬 SOPORTE <span style="font-size:0.75rem;display:block;">+56 9 4291 1303</span></a>
+<div class="toast" id="toast" role="status"></div>
+<script type="module" src="main.js"></script>
 </body>
 </html>
