@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getFirestore, doc, setDoc, getDoc, getDocs, collection, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const db = getFirestore(initializeApp({
-  apiKey: "AIzaSyDR2P_E74_p134MphiUUktXGzVvKy4hn1Y",
+  apiKey: "AIzaSyDR2P_E74_p134MphIUUktXGzVvKy4hn1Y",
   authDomain: "como-me-encuentro-hoy.firebaseapp.com",
   projectId: "como-me-encuentro-hoy",
   storageBucket: "como-me-encuentro-hoy.firebasestorage.app",
