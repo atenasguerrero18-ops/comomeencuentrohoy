@@ -25,16 +25,22 @@ const norm = d => ({ ...d, date: d.date || d.fecha, sleep: d.sleep ?? (d.sueno |
 
 // ---- Ingreso con código de empresa ----
 $('btn-ingresar').onclick = async () => {
-  const cod = $('codigo').value.trim().toUpperCase(), n = $('nombre').value.trim(), s = $('deporte').value;
-  if (!cod || !n || !s) { toast('Escribe el código, tu nombre y tu deporte.'); return }
-  if (/\//.test(cod + n)) { toast('El código y el nombre no pueden llevar "/".'); return }
+  const cod = $('codigo').value.trim().toUpperCase();
+  if (!cod) { toast('Escribe tu código.'); return }
   try {
-    // El código se busca en Firestore: codigos/{CÓDIGO} con campos opcionales empresa, fecha (AAAA-MM-DD) y activo
+    // codigos/{CÓDIGO}: empresa, nombre (código personal), deporte (opcional), fecha (opcional), activo
     const cs = await getDoc(doc(db, 'codigos', cod)), cd = cs.exists() ? cs.data() : null;
     if (!cd || cd.activo === false || (cd.fecha && cd.fecha !== today())) { toast('El código no es válido o ya venció.'); return }
+    let n = (cd.nombre || '').trim();
+    if (!n) { // código de grupo: pide el nombre
+      n = $('nombre').value.trim();
+      if (!n) { $('fnombre').hidden = false; toast('Este código es de grupo. Escribe tu nombre para continuar.'); return }
+    }
+    if (/\//.test(cod + n)) { toast('El código y el nombre no pueden llevar "/".'); return }
+    const s = cd.deporte || '';
     P = { emp: cd.empresa || cod, name: n, sport: s, checks: [], trains: [] };
     const uref = doc(db, ...userPath());
-    if ((await getDoc(uref)).exists()) await setDoc(uref, { deporte: s }, { merge: true });
+    if ((await getDoc(uref)).exists()) { if (s) await setDoc(uref, { deporte: s }, { merge: true }) }
     else await setDoc(uref, { nombre: n, deporte: s, fechaCreacion: new Date().toISOString() });
     const [rs, ts] = await Promise.all([
       getDocs(query(collection(db, ...userPath(), 'registros_diarios'), orderBy('fecha', 'desc'), limit(60))),
@@ -45,7 +51,7 @@ $('btn-ingresar').onclick = async () => {
     $('cdate').value = $('tdate').value = today(); resetScales(); $('res').hidden = true; go('check');
   } catch (e) { console.error(e); toast('No se pudo conectar con la base de datos.') }
 };
-$('out').onclick = () => { P = null; $('codigo').value = ''; $('app').hidden = true; $('seccion-ingreso').hidden = false };
+$('out').onclick = () => { P = null; $('codigo').value = ''; $('nombre').value = ''; $('fnombre').hidden = true; $('app').hidden = true; $('seccion-ingreso').hidden = false };
 function go(v) { ['check', 'train', 'hist'].forEach(k => $('v-' + k).hidden = k !== v); [...$('tabs').children].forEach(b => b.classList.toggle('on', b.dataset.v === v)); if (v === 'hist') render() }
 $('tabs').onclick = e => { if (e.target.dataset.v) go(e.target.dataset.v) };
 
@@ -53,7 +59,10 @@ $('tabs').onclick = e => { if (e.target.dataset.v) go(e.target.dataset.v) };
 function loads() {
   const t0 = new Date(today() + 'T00:00:00');
   const sum = d => P.trains.filter(x => { const a = (t0 - new Date(x.date + 'T00:00:00')) / 864e5; return a >= 0 && a < d }).reduce((s, x) => s + (x.load || 0), 0);
-  const a = sum(7), t = sum(28), c = t / 4; return { a, t, acwr: c > 0 ? a / c : null }
+  const a = sum(7), t = sum(28), c = t / 4;
+  const first = P.trains.length ? Math.min(...P.trains.map(x => new Date(x.date + 'T00:00:00'))) : null;
+  const ready = first != null && (t0 - first) / 864e5 >= 21; // el ACWR solo cuenta con 3+ semanas de datos
+  return { a, t, ready, acwr: ready && c > 0 ? a / c : null }
 }
 function compute(c) {
   const h = P.checks.filter(x => x.date < c.date).slice(-14);
@@ -123,7 +132,7 @@ $('ftrain').onsubmit = async e => {
 function render() {
   const k = P.checks.filter(x => x.score != null);
   $('sdays').textContent = k.length; $('savg').textContent = k.length ? Math.round(avg(k.map(x => x.score))) : '—'; $('slast').textContent = k.length ? k[k.length - 1].date : '—';
-  const L = loads(); $('l7').textContent = Math.round(L.a); $('l28').textContent = Math.round(L.t); $('acwr').textContent = L.acwr == null ? '—' : L.acwr.toFixed(2);
+  const L = loads(); $('l7').textContent = Math.round(L.a); $('l28').textContent = Math.round(L.t); $('acwr').textContent = L.acwr == null ? '—' : L.acwr.toFixed(2); $('acwrnote').textContent = L.ready ? '' : 'El ACWR se calcula cuando tienes al menos 3 semanas de entrenamientos registrados.';
   const last = k.slice(-14);
   $('chart').innerHTML = last.length ? '<div class="chart">' + last.map(x => `<div class="col" title="${x.date}: ${x.score}"><i class="c${lvl(x.score)}" style="height:${x.score}%"></i><small>${x.date.slice(8)}</small></div>`).join('') + '</div>' : '<p class="muted">Aún no tienes registros. Haz tu primer chequeo y aparecerá aquí.</p>';
   const hv = P.checks.filter(x => x.hrv != null).slice(-14);

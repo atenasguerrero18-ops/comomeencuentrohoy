@@ -16,12 +16,12 @@
 
 <div id="seccion-ingreso" class="card">
   <h2>Acceso privado</h2>
-  <p class="muted">Este panel es de uso interno. Ingresa el código que te entregó tu equipo, tu nombre y tu deporte.</p>
-  <label for="codigo">Código de empresa</label><input id="codigo" autocomplete="off" autocapitalize="characters">
-  <label for="nombre">Tu nombre</label><input id="nombre" autocomplete="given-name">
-  <p class="muted">Usa siempre el mismo nombre: si ya existe, se abre tu historial.</p>
-  <label for="deporte">Tu deporte</label>
-  <select id="deporte"><option value="">Elige tu deporte</option><option>Fútbol</option><option>Básquetbol</option><option>Vóleibol</option><option>Atletismo</option><option>Natación</option><option>Ciclismo</option><option>Tenis</option><option>Rugby</option><option>Gimnasio / Fitness</option><option>Otro</option></select>
+  <p class="muted">Este panel es de uso interno. Ingresa el código personal que te entregó tu equipo.</p>
+  <label for="codigo">Tu código</label><input id="codigo" autocomplete="off" autocapitalize="characters">
+  <div id="fnombre" hidden>
+    <label for="nombre">Tu nombre y apellido</label><input id="nombre" autocomplete="name">
+    <p class="muted">Este código es de grupo. Escribe tu nombre siempre igual para que se abra tu historial.</p>
+  </div>
   <button id="btn-ingresar" type="button">Ingresar al perfil</button>
 </div>
 
@@ -79,7 +79,7 @@
       <select id="ttype"><option>Fuerza</option><option>Resistencia</option><option>Velocidad</option><option>Técnico</option><option>Partido</option><option>Recuperación</option><option>Otro</option></select>
       <div class="row">
         <div><label for="tmin">Duración (min)</label><input id="tmin" inputmode="numeric"></div>
-        <div><label for="tmet">Esfuerzo MET (1-10)</label><input id="tmet" inputmode="decimal"></div>
+        <div><label for="tmet">Esfuerzo percibido (1-10)</label><input id="tmet" inputmode="decimal"></div>
         <div><label for="thr">Pulso promedio</label><input id="thr" inputmode="numeric"></div>
         <div><label for="thrmax">Pulso máximo</label><input id="thrmax" inputmode="numeric"></div>
       </div>
@@ -97,6 +97,7 @@
     <div class="card"><h2>HRV frente a tu promedio</h2><div id="hrvc"></div></div>
     <div class="card"><h2>Carga de entrenamiento</h2>
       <div class="stats"><div><b id="l7">0</b><span>Carga 7 días</span></div><div><b id="l28">0</b><span>Carga 28 días</span></div><div><b id="acwr">—</b><span>ACWR</span></div></div>
+      <p class="muted" id="acwrnote"></p>
       <ul class="list" id="sess"></ul></div>
   </section>
 </div>
