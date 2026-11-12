@@ -103,7 +103,41 @@ function showResult(r, c) {
   if (r.acwr > 1.5) t.push('Tu carga de esta semana es mucho mayor que tu promedio (ACWR ' + r.acwr.toFixed(2) + '). Considera bajarla.');
   if (c.phase) t.push('Fase del ciclo registrada: ' + c.phase.toLowerCase() + '. Tenla en cuenta al leer tu recuperación.');
   if (P.checks.filter(x => x.hrv != null).length < 4) t.push('Tu línea base de HRV y pulso se afina después de unos 3 días de registro.');
-  $('notes').innerHTML = t.map(x => '<li>' + x + '</li>').join(''); $('res').scrollIntoView();
+  $('notes').innerHTML = t.map(x => '<li>' + x + '</li>').join(''); showNutri(r, c); $('res').scrollIntoView();
+}
+
+// ---- Alimentación según el semáforo ----
+const NUTRI = [
+  { t: 'Día verde: combustible para rendir', i: [
+    ['🍚', 'Carbohidratos', 'Una porción (un puño) de arroz, pasta, papa, avena o pan en la comida previa, 2 a 3 horas antes de entrenar.'],
+    ['🍗', 'Proteína', 'Una porción (palma de la mano) en cada comida: huevo, pollo, pescado, legumbres, yogurt o carne magra.'],
+    ['💧', 'Hidratación', 'Empieza el día con 1 o 2 vasos de agua y bebe a sorbos durante la sesión. Orina clara significa que vas bien.'],
+    ['🥗', 'Frutas y verduras', 'Que no falten en almuerzo y cena: aportan vitaminas y minerales para sostener el ritmo.']
+  ] },
+  { t: 'Día amarillo: cuida lo que comes hoy', i: [
+    ['🍚', 'Carbohidratos', 'No los recortes: una porción (un puño) en cada comida principal, y un snack antes de entrenar (plátano, pan, avena).'],
+    ['🍗', 'Proteína', 'Reparte una porción (palma) en cada comida, incluido el desayuno.'],
+    ['💧', 'Hidratación', 'Suma 2 o 3 vasos de agua extra a tu día habitual. Orina clara, no amarilla intensa.'],
+    ['🍓', 'Frutas y verduras', 'Incluye frutas y verduras de varios colores en al menos dos comidas.']
+  ] },
+  { t: 'Día rojo: tu cuerpo repara, aliméntalo bien', i: [
+    ['🍗', 'Proteína', 'Una porción (palma) en cada comida y en cada snack si puedes, cada 3 o 4 horas: huevo, pescado, legumbres, yogurt, pollo.'],
+    ['🍚', 'Carbohidratos', 'No comas menos: repón con arroz, papa, avena, fruta o pan en cada comida. Tu cuerpo los usa para recuperarse.'],
+    ['💧', 'Hidratación', 'Suma 3 o más vasos de agua extra. Puedes sumar caldos, sopas o infusiones.'],
+    ['🥗', 'Frutas y verduras', 'Abundantes y de colores: la mitad del plato en el almuerzo y la cena.'],
+    ['🚫', 'Hoy evita', 'Alcohol y comida muy procesada. Limita la cafeína si dormiste poco.']
+  ] }
+];
+function showNutri(r, c) {
+  const n = NUTRI[lvl(r.score)], x = [];
+  if (c.sleep != null && c.sleep < 6) x.push('Dormiste poco: evita la cafeína después de las 14:00 y come cada 3 o 4 horas, sin saltarte comidas.');
+  if ((c.pain || 0) >= 4) x.push('Dolor alto: que no falte la proteína en cada comida, y suma frutas y verduras de colores, pescado o frutos secos.');
+  if ((c.fatigue || 0) >= 4) x.push('Fatiga alta: no saltes comidas y ten a mano un snack con carbohidrato y proteína (yogurt con fruta, pan con huevo).');
+  if (r.acwr > 1.3) x.push('Tu carga de la semana es alta: después de cada sesión, come un carbohidrato con proteína dentro de 1 o 2 horas.');
+  $('nutri').innerHTML = '<h3 style="margin:20px 0 4px">🍽️ Alimentación de hoy</h3><p class="muted" style="margin:0 0 6px">' + n.t + '</p>'
+    + n.i.map(([e, h, t]) => '<div style="display:flex;gap:10px;padding:10px 0;border-top:1px solid #e3dfd2"><span style="font-size:1.4rem">' + e + '</span><div><b>' + h + '</b><div>' + t + '</div></div></div>').join('')
+    + (x.length ? '<div style="padding:10px 0;border-top:1px solid #e3dfd2"><b>Según tus datos de hoy</b><ul>' + x.map(y => '<li>' + y + '</li>').join('') + '</ul></div>' : '')
+    + '<p class="muted" style="margin-top:8px;font-size:.85em">Guía general de alimentación. No reemplaza a un nutricionista, sobre todo si tienes una lesión, una condición médica o una dieta especial.</p>';
 }
 
 // ---- Guardado en Firestore ----
