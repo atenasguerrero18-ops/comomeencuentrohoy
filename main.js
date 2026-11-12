@@ -48,12 +48,16 @@ $('btn-ingresar').onclick = async () => {
     rs.forEach(d => P.checks.push(norm(d.data()))); P.checks.reverse();
     ts.forEach(d => P.trains.push(d.data())); P.trains.reverse();
     $('hello').textContent = 'Hola, ' + n; $('seccion-ingreso').hidden = true; $('app').hidden = false;
-    $('cdate').value = $('tdate').value = today(); resetScales(); $('res').hidden = true; go('check');
+    $('cdate').value = $('tdate').value = today(); resetScales(); resetCiclo(); $('res').hidden = true; go('check');
   } catch (e) { console.error(e); toast('No se pudo conectar con la base de datos.') }
 };
 $('out').onclick = () => { P = null; $('codigo').value = ''; $('nombre').value = ''; $('fnombre').hidden = true; $('app').hidden = true; $('seccion-ingreso').hidden = false };
 function go(v) { ['check', 'train', 'hist'].forEach(k => $('v-' + k).hidden = k !== v); [...$('tabs').children].forEach(b => b.classList.toggle('on', b.dataset.v === v)); if (v === 'hist') render() }
 $('tabs').onclick = e => { if (e.target.dataset.v) go(e.target.dataset.v) };
+
+// ---- Ciclo menstrual: solo con consentimiento ----
+function resetCiclo() { $('cyc-ok').checked = false; $('cyc').hidden = true; $('phase').value = ''; $('pday').value = '' }
+$('cyc-ok').onchange = () => { $('cyc').hidden = !$('cyc-ok').checked; if (!$('cyc-ok').checked) { $('phase').value = ''; $('pday').value = '' } };
 
 // ---- Cálculo ----
 function loads() {
@@ -79,8 +83,6 @@ function compute(c) {
   if (c.spo2 != null) p.push(cl(100 - Math.max(0, 95 - c.spo2) * 20));
   if (c.temp != null) p.push(cl(100 - Math.max(0, Math.abs(c.temp - 36.6) - 0.6) * 60));
   if (c.stress != null) p.push(cl(100 - (c.stress - 1) * 11));
-  if (c.glu != null) p.push(c.glu >= 70 && c.glu <= 140 ? 100 : 55);
-  if (c.sys != null && c.dia != null) p.push(c.sys >= 90 && c.sys <= 130 && c.dia >= 60 && c.dia <= 85 ? 100 : 55);
   B.band = p.length ? avg(p) : null;
   const W = { rec: .35, sleep: .2, mind: .15, pain: .2, band: .1 }; let s = 0, w = 0;
   for (const k in W) if (B[k] != null) { s += B[k] * W[k]; w += W[k] }
@@ -107,7 +109,7 @@ function showResult(r, c) {
 // ---- Guardado en Firestore ----
 $('fcheck').onsubmit = async e => {
   e.preventDefault();
-  const c = { date: $('cdate').value, hrv: num('hrv'), rhr: num('rhr'), sleep: num('sleep'), frag: num('frag'), spo2: num('spo2'), temp: num('temp'), glu: num('glu'), sys: num('sys'), dia: num('dia'), stress: num('stress'), sleepQ: sc.sleepQ, body: sc.body, mood: sc.mood, pain: sc.pain, fatigue: sc.fatigue, phase: $('phase').value, pday: num('pday') };
+  const c = { date: $('cdate').value, hrv: num('hrv'), rhr: num('rhr'), sleep: num('sleep'), frag: num('frag'), spo2: num('spo2'), temp: num('temp'), stress: num('stress'), sleepQ: sc.sleepQ, body: sc.body, mood: sc.mood, pain: sc.pain, fatigue: sc.fatigue, phase: $('cyc-ok').checked ? $('phase').value : '', pday: $('cyc-ok').checked ? num('pday') : null };
   if (!c.date || c.hrv == null || c.rhr == null || c.sleep == null) { toast('Completa fecha, HRV, pulso y horas de sueño.'); return }
   const r = compute(c); c.score = r.score; c.fecha = c.date;
   try {

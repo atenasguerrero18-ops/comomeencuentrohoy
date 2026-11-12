@@ -44,9 +44,9 @@
           <div><label for="frag">Despertares</label><input id="frag" inputmode="numeric"></div>
           <div><label for="spo2">Oxígeno (%)</label><input id="spo2" inputmode="decimal"></div>
           <div><label for="temp">Temperatura (°C)</label><input id="temp" inputmode="decimal"></div>
-          <div><label for="glu">Glucosa (mg/dL)</label><input id="glu" inputmode="decimal"></div>
-          <div><label for="sys">Tensión sistólica</label><input id="sys" inputmode="numeric"></div>
-          <div><label for="dia">Tensión diastólica</label><input id="dia" inputmode="numeric"></div>
+
+
+
         </div>
         <label for="stress">Estrés de la banda (1-10)</label><input id="stress" inputmode="numeric">
       </details>
@@ -56,8 +56,10 @@
       <label>¿Dolor muscular?</label><div class="scale" id="pain"></div><div class="ends"><span>Nada</span><span>Mucho</span></div>
       <label>¿Fatiga?</label><div class="scale" id="fatigue"></div><div class="ends"><span>Nada</span><span>Mucho</span></div>
       <details><summary>Ciclo menstrual (opcional)</summary>
-        <div class="row">
-          <div><label for="phase">Fase</label><select id="phase"><option value="">No aplica</option><option>Menstrual</option><option>Folicular</option><option>Ovulación</option><option>Lútea</option></select></div>
+        <p class="muted">Compartir esta información es voluntario y solo si estás de acuerdo. Para deportistas mujeres, puede ayudarnos a interpretar mejor tus datos y tu recuperación. Si no marcas la casilla, no se pide ni se guarda nada del ciclo.</p>
+        <label style="margin-top:12px"><input type="checkbox" id="cyc-ok">Acepto compartir los datos de mi ciclo menstrual</label>
+        <div id="cyc" class="row" hidden>
+          <div><label for="phase">Fase</label><select id="phase"><option value="">No sé / prefiero no decir</option><option>Menstrual</option><option>Folicular</option><option>Ovulación</option><option>Lútea</option></select></div>
           <div><label for="pday">Día del ciclo</label><input id="pday" inputmode="numeric"></div>
         </div>
       </details>
