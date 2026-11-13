@@ -25,7 +25,8 @@ const norm = d => ({ ...d, date: d.date || d.fecha, sleep: d.sleep ?? (d.sueno |
 
 // ---- Ingreso con código de empresa ----
 $('btn-ingresar').onclick = async () => {
-  const cod = $('codigo').value.trim().toUpperCase();
+  // limpia el código: quita espacios y caracteres invisibles (al pegar desde WhatsApp) y cambia guiones raros por el guion normal
+  const cod = $('codigo').value.normalize('NFKC').replace(/[\s\u200B-\u200D\uFEFF]/g, '').replace(/[\u2010-\u2015\u2212]/g, '-').toUpperCase();
   if (!cod) { toast('Escribe tu código.'); return }
   try {
     // codigos/{CÓDIGO}: empresa, nombre (código personal), deporte (opcional), fecha (opcional), activo
@@ -51,6 +52,8 @@ $('btn-ingresar').onclick = async () => {
     $('cdate').value = $('tdate').value = today(); resetScales(); resetCiclo(); $('res').hidden = true; go('check');
   } catch (e) { console.error(e); toast('No se pudo conectar con la base de datos.') }
 };
+// Enter en el teclado también ingresa
+['codigo', 'nombre'].forEach(id => $(id).addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('btn-ingresar').click() } }));
 $('out').onclick = () => { P = null; $('codigo').value = ''; $('nombre').value = ''; $('fnombre').hidden = true; $('app').hidden = true; $('seccion-ingreso').hidden = false };
 function go(v) { ['check', 'train', 'hist'].forEach(k => $('v-' + k).hidden = k !== v); [...$('tabs').children].forEach(b => b.classList.toggle('on', b.dataset.v === v)); if (v === 'hist') render() }
 $('tabs').onclick = e => { if (e.target.dataset.v) go(e.target.dataset.v) };
